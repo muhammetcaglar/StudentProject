@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using StudentAPI.DataModels;
+using StudentAPI.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace StudentAPI
         {
 
             services.AddControllers();
+            services.AddScoped<IStudentRepository, SqlStudentRepository>();
             services.AddDbContext<StudentAdminContext>(options => options.UseSqlServer(Configuration.GetConnectionString("StudentAdminPortalDb")));
             services.AddSwaggerGen(c =>
             {
