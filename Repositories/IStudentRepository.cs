@@ -1,12 +1,13 @@
 ﻿using StudentAPI.DataModels;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StudentAPI.Repositories
 {
     public interface IStudentRepository
     {
         
-        List<Student> GetStudents();
+        Task<List<Student>> GetStudentsAsync();
 
     }
 }
