@@ -11,13 +11,13 @@ namespace StudentAPI.Controllers
     [ApiController]
     public class StudentsController : Controller
     {
-        private readonly IStudentRepository studentrepositry;
+        private readonly IStudentRepository studentrepository;
         private readonly IMapper mapper;
 
         public StudentsController(IStudentRepository studentrepositry, IMapper mapper)
         {
-                this.studentrepositry = studentrepositry;
-                this.mapper = mapper;
+            this.studentrepository = studentrepositry;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -25,9 +25,9 @@ namespace StudentAPI.Controllers
         public async Task<IActionResult> GetAllStudentsAsync()
         {
             //With auto mapper
-          var students = await studentrepositry.GetStudentsAsync();
+            var students = await studentrepository.GetStudentsAsync();
 
-          return Ok(mapper.Map<List<Student>>(students));
+            return Ok(mapper.Map<List<Student>>(students));
 
 
             //ManuelMapper Yaptığım işlem
@@ -62,6 +62,45 @@ namespace StudentAPI.Controllers
             //return Ok(domainModelStudents);
         }
 
- 
+        [HttpGet]
+        [Route("[controller]/{studentId:guid}")]
+        public async Task<IActionResult> GetAllStudentAsync([FromRoute] Guid studentId)
+        {
+            //With auto mapper
+            var student = await studentrepository.GetStudentAsync(studentId);
+
+            if(student == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(mapper.Map<Student>(student));
+        }
+
+        [HttpPut]
+        [Route("[controller]/{studentId:guid}")]
+        public async Task<IActionResult> UpdateStudentAsync([FromRoute] Guid studentId, [FromBody] UpdateStudentRequest request)
+        {
+
+
+            if (await studentrepository.Exists(studentId))
+            {
+                var updatedStudent = await studentrepository.UpdateStudent(studentId, mapper.Map<DataModels.Student>(request));
+                if (updatedStudent != null)
+                {
+                    return Ok(mapper.Map<Student>(updatedStudent));
+                }
+            }
+            return NotFound();
+
+            //var student = await studentrepositry.GetStudentAsync(studentId);
+
+            //if (student == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return Ok(mapper.Map<Student>(student));
+        }
     }
 }
