@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +38,7 @@ namespace StudentAPI
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
             services.AddControllers();
+            services.AddFluentValidation(fv=> fv.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddScoped<IStudentRepository, SqlStudentRepository>();
             services.AddScoped<IImageRepository, LocalStorageImageRepository>();
             services.AddDbContext<StudentAdminContext>(options => options.UseSqlServer(Configuration.GetConnectionString("StudentAdminPortalDb")));
