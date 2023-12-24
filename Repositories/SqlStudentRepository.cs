@@ -57,5 +57,40 @@ namespace StudentAPI.Repositories
             }
             return null;
         }
+
+        public async Task<Student> DeleteStudent(Guid studentId)
+        {
+            var existingStudent = await GetStudentAsync(studentId);
+            if (existingStudent != null)
+            {
+                context.Student.Remove(existingStudent);
+                await context.SaveChangesAsync();
+                return existingStudent;
+            }
+            return null;
+        }
+
+        public async Task<Student> addStudent(Student request)
+        {
+         var student= await   context.Student.AddAsync(request);
+            await context.SaveChangesAsync();
+            return student.Entity;
+        }
+
+        public async Task<bool> UpdateProfileImage(Guid studentId, string profileImageUrl)
+        {
+            var student = await GetStudentAsync(studentId);
+
+            if (student != null)
+            {
+                student.ProfileImageUrl = profileImageUrl;
+                await context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+
     }
 }
